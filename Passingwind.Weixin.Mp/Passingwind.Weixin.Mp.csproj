@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework></TargetFramework>
+		<TargetFrameworks>netstandard2.0;net46</TargetFrameworks>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Passingwind.Weixin.Common\Passingwind.Weixin.Common.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="Common\" />
+	</ItemGroup>
+
+</Project>

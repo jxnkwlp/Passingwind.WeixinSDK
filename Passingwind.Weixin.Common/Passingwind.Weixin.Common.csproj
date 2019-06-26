@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework></TargetFramework>
+		<TargetFrameworks>netstandard2.0;net46</TargetFrameworks>
+		<RootNamespace>Passingwind.Weixin</RootNamespace>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <Compile Remove="Models\GetWXACodeRequest.cs" />
+	  <Compile Remove="Models\GetWXACodeUnlimitRequest.cs" />
+	  <Compile Remove="Models\JsCode2SessionResponse.cs" />
+	  <Compile Remove="Models\UserInfoResult.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(TargetFramework) == 'net46'">
+		<PackageReference Include="System.Net.Http" Version="4.3.4" />
+	</ItemGroup>
+
+</Project>
