@@ -25,7 +25,7 @@ namespace Passingwind.Weixin.Mp.Apis
         /// </remarks>
         public async Task<CallbackIpJsonReturnModel> GetCallbackIpAsync()
         {
-            return (await HttpHelper.GetAsync<CallbackIpJsonReturnModel>($"{ServerUrl.MPAPI_URL}/getcallbackip?access_token={_api.Token?.AccessToken}")).Data;
+            return (await HttpHelper.GetAsync<CallbackIpJsonReturnModel>($"{ServerUrl.MP_API_URL}/getcallbackip?access_token={_api.Token?.AccessToken}")).Data;
         }
 
 
@@ -37,8 +37,8 @@ namespace Passingwind.Weixin.Mp.Apis
         /// </remarks>
         public async Task<CheckResultModel> CheckAsync(CheckRequest request)
         {
-            var url = $"{ServerUrl.MPAPI_URL}/callback/check?access_token={_api.Token?.AccessToken}";
-            return (await HttpHelper.PostAsync<CheckRequest, CheckResultModel>(url, request, PostDataFormat.Json)).Data;
+            var url = $"{ServerUrl.MP_API_URL}/callback/check?access_token={_api.Token?.AccessToken}";
+            return (await HttpHelper.PostAsync<CheckRequest, CheckResultModel>(url, request, PostDataType.Json)).Data;
         }
     }
 }

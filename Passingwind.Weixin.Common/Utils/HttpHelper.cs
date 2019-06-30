@@ -1,8 +1,10 @@
-ï»¿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using Passingwind.Weixin.Logger;
 using Passingwind.Weixin.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -31,6 +33,8 @@ namespace Passingwind.Weixin.Common.Utils
 
                 result.HttpStatusCode = (int)response.StatusCode;
                 result.ContentType = response.Content.Headers.ContentType?.ToString();
+                result.ContentDisposition = response.Content.Headers.ContentDisposition?.ToString();
+
                 result.Raw = await response.Content.ReadAsByteArrayAsync();
 
                 LoggerManager.GetLogger().Info($"request url {url} success. response");
@@ -76,7 +80,84 @@ namespace Passingwind.Weixin.Common.Utils
 
                 result.HttpStatusCode = (int)response.StatusCode;
                 result.ContentType = response.Content.Headers.ContentType?.ToString();
+                result.ContentDisposition = response.Content.Headers.ContentDisposition?.ToString();
+
                 result.Raw = await response.Content.ReadAsByteArrayAsync();
+
+                LoggerManager.GetLogger().Info($"request url {url} success. response");
+                LoggerManager.GetLogger().Info(result.RawString);
+            }
+            catch (Exception ex)
+            {
+                result.Exception = ex;
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        ///  Post
+        /// </summary> 
+        public static async Task<HttpResponse> PostAsync(string url, IList<KeyValuePair<string, object>> formData)
+        {
+            var result = new HttpResponse();
+
+            try
+            {
+                HttpResponseMessage httpResponse;
+
+                if (formData.Any(t => t.Value.GetType() == typeof(UploadFileModel)))
+                {
+                    string boundary = Guid.NewGuid().ToString();
+                    var content = new MultipartFormDataContent(boundary);
+                    content.Headers.Remove("Content-Type");
+                    content.Headers.TryAddWithoutValidation("Content-Type", $"multipart/form-data; boundary={boundary}");
+
+                    foreach (var item in formData)
+                    {
+                        if (item.Value == null)
+                            continue;
+
+                        if (item.Value.GetType() == typeof(UploadFileModel))
+                        {
+                            var file = (UploadFileModel)item.Value;
+                            var d = new ByteArrayContent(file.Data);
+
+                            d.Headers.Remove("Content-Disposition");
+                            d.Headers.TryAddWithoutValidation("Content-Disposition", $"form-data;name=\"media\"; filename=\"{file.FileName}\";filelength=\"{file.Data.Length}\""); // ºÍÎ¢ÐÅ¼æÈÝ
+
+                            content.Add(d, item.Key, file.FileName);
+                        }
+                        else if (item.Value.GetType().IsEnum)
+                        {
+                            content.Add(new StringContent(item.Value.ToString().ToLower(), Encoding.UTF8), item.Key);
+                        }
+                        else if (item.Value.GetType() == typeof(MediaDescription))
+                        {
+                            content.Add(new StringContent(JsonConvert.SerializeObject(item.Value, JsonSerializerConfig.SerializerSettings), Encoding.UTF8), item.Key);
+                        }
+                        else
+                        {
+                            content.Add(new StringContent(item.Value.ToString(), Encoding.UTF8), item.Key);
+                        }
+                    }
+
+                    httpResponse = await _httpClient.PostAsync(url, content);
+                }
+                else
+                {
+                    var content = new FormUrlEncodedContent(formData.Where(t => t.Value != null).Select(t => new KeyValuePair<string, string>(t.Key, t.Value.ToString())));
+
+                    httpResponse = await _httpClient.PostAsync(url, content);
+                }
+
+                httpResponse.EnsureSuccessStatusCode();
+
+                result.HttpStatusCode = (int)httpResponse.StatusCode;
+                result.ContentType = httpResponse.Content.Headers.ContentType?.ToString();
+                result.ContentDisposition = httpResponse.Content.Headers.ContentDisposition?.ToString();
+
+                result.Raw = await httpResponse.Content.ReadAsByteArrayAsync();
 
                 LoggerManager.GetLogger().Info($"request url {url} success. response");
                 LoggerManager.GetLogger().Info(result.RawString);
@@ -110,17 +191,29 @@ namespace Passingwind.Weixin.Common.Utils
         public static async Task<HttpResponse> PostAsync<TRequestData>(
             string url,
             TRequestData requestData,
-            PostDataFormat format)
+            PostDataType dataType)
             where TRequestData : class
         {
-            string content = string.Empty;
-
-            if (format == PostDataFormat.Json)
+            if (dataType == PostDataType.Json)
             {
-                content = Newtonsoft.Json.JsonConvert.SerializeObject(requestData, JsonSerializerConfig.SerializerSettings);
-            }
+                string content = JsonConvert.SerializeObject(requestData, JsonSerializerConfig.SerializerSettings);
 
-            return await PostAsync(url, content);
+                return await PostAsync(url, content);
+            }
+            else if (dataType == PostDataType.FormData)
+            {
+                var list = new List<KeyValuePair<string, object>>();
+                foreach (var item in requestData.GetType().GetProperties())
+                {
+                    list.Add(new KeyValuePair<string, object>(item.Name.ToLower(), item.GetValue(requestData, null)));
+                }
+
+                return await PostAsync(url, list);
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
         }
 
         /// <summary>
@@ -129,10 +222,10 @@ namespace Passingwind.Weixin.Common.Utils
         public static async Task<HttpResponse<TResultData>> PostAsync<TResultData>(
             string url,
             object requestData,
-            PostDataFormat format = PostDataFormat.Json)
+            PostDataType dataType = PostDataType.Json)
             where TResultData : JsonResultModel
         {
-            HttpResponse result = await PostAsync(url, requestData, format);
+            HttpResponse result = await PostAsync(url, requestData, dataType);
 
             if (result.Success && !string.IsNullOrEmpty(result.RawString))
             {
@@ -148,11 +241,11 @@ namespace Passingwind.Weixin.Common.Utils
         public static async Task<HttpResponse<TResultData>> PostAsync<TRequestData, TResultData>(
             string url,
             TRequestData requestData,
-            PostDataFormat format = PostDataFormat.Json)
+            PostDataType dataType = PostDataType.Json)
             where TRequestData : class
              where TResultData : JsonResultModel
         {
-            HttpResponse result = await PostAsync(url, requestData, format);
+            HttpResponse result = await PostAsync(url, requestData, dataType);
 
             if (result.Success && !string.IsNullOrEmpty(result.RawString))
             {
@@ -164,9 +257,10 @@ namespace Passingwind.Weixin.Common.Utils
 
     }
 
-    public enum PostDataFormat
+    public enum PostDataType
     {
         Json,
+        FormData,
         Xml
     }
 
@@ -177,6 +271,8 @@ namespace Passingwind.Weixin.Common.Utils
         public int HttpStatusCode { get; set; }
 
         public string ContentType { get; set; }
+
+        public string ContentDisposition { get; set; }
 
         public Exception Exception { get; set; }
 

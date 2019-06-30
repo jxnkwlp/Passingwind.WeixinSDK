@@ -1,6 +1,11 @@
+using Passingwind.Weixin.Models;
 using Passingwind.Weixin.Mp;
 using Passingwind.Weixin.Mp.Models;
+using Passingwind.Weixin.Mp.Models.Media;
+using Passingwind.Weixin.Mp.Models.Menus;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
@@ -100,7 +105,111 @@ namespace Passingwind.WeixinSDK.Apis
 
             var result12 = await MpApi.UserApi.BatchUnTags(result8.Tags[0].Id, openIds[0]);
             Assert.True(result12.ErrorCode == 0);
+
+
+            var result13 = await MpApi.UserApi.BatchBlackList(openIds[1]);
+            Assert.True(result13.ErrorCode == 0);
+
+            var result14 = await MpApi.UserApi.GetBlackList();
+            Assert.True(result14.ErrorCode == 0 && result14.Data.Openid.Length > 0);
+
+            result14 = await MpApi.UserApi.GetBlackList();
+            Assert.True(result14.ErrorCode == 0 && result14.Data?.Openid?.Length == 0);
         }
 
+        [Fact]
+        public async Task MenuAPi_TestAsync()
+        {
+            var menuCreate = new CreateMenuRequesetModel();
+
+            menuCreate.Button = new List<MenuButtonModel>();
+            menuCreate.Button.Add(new MenuButtonModel()
+            {
+                Name = "今日歌曲",
+                Type = MenuButtonType.Click,
+                Key = "001",
+            });
+
+            menuCreate.Button.Add(new MenuButtonModel()
+            {
+                Name = "菜单",
+                Sub_Button = new List<MenuButtonModel>() {
+                    new MenuButtonModel(){
+                        Name = "搜索",
+                        Type = MenuButtonType.View,
+                        Url = "http://www.soso.com/"
+                    },
+
+                    new MenuButtonModel(){
+                        Name = "赞一下我们",
+                        Type = MenuButtonType.Click,
+                        Key = "V1001_GOOD"
+                    }
+                },
+            });
+
+            var result1 = await MpApi.MenuApi.CreateAsync(menuCreate);
+            Assert.True(result1.ErrorCode == 0);
+
+            var result2 = await MpApi.MenuApi.GetAsync();
+            Assert.True(result2.ErrorCode == 0 && result2.Menu?.Button?.Count > 0);
+
+            var result3 = await MpApi.MenuApi.DeleteAsync();
+            Assert.True(result3.ErrorCode == 0);
+        }
+
+        [Fact]
+        public async Task ConditionalMenuAPi_TestAsync()
+        {
+            var list = await MpApi.UserApi.GetListAsync();
+
+            var menuCreate = new AddConditionalRequestModel();
+
+            menuCreate.Button = new List<MenuButtonModel>();
+            menuCreate.Button.Add(new MenuButtonModel()
+            {
+                Name = "abc",
+                Type = MenuButtonType.Click,
+                Key = "001",
+            });
+
+            menuCreate.MatchRule = new MenuConditionalMatchRuleModel()
+            {
+                Sex = 1,
+            };
+
+            var result1 = await MpApi.MenuApi.AddConditional(menuCreate);
+            Assert.True(result1.ErrorCode == 0);
+
+            var result2 = await MpApi.MenuApi.ConditionalTryMatch(list.Data.Openid[0]);
+            Assert.True(result2.ErrorCode == 0 && result2.Menu?.Button?.Count > 0);
+
+            var result3 = await MpApi.MenuApi.DeleteConditional();
+            Assert.True(result3.ErrorCode == 0);
+        }
+
+
+        [Fact]
+        public async Task Media_TestAsync()
+        {
+            var result1 = await MpApi.MediaApi.UploadAsync(new MediaUploadRequestModel()
+            {
+                Type = MediaType.Image,
+                Media = new UploadFileModel()
+                {
+                    Data = File.ReadAllBytes(AppDomain.CurrentDomain.BaseDirectory + "test-file.png"),
+                    FileName = "myfile.png",
+                    ContentType = "image/png"
+                }
+            });
+
+            // {"type":"image","media_id":"xA_QBUJyD__azbK2gYvK-6Lh6NFtAohGUsBw1Re1_peUMYuDDaSbkggEMIz6epsF","created_at":1561866387}
+            Assert.True(result1.ErrorCode == 0);
+
+
+            var result2 = await MpApi.MediaApi.GetAsync(result1.Media_Id);
+
+            Assert.True(result2.Data.Length > 0);
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿using Passingwind.Weixin.Common;
+using Passingwind.Weixin.Common;
 using Passingwind.Weixin.Common.Utils;
 using Passingwind.Weixin.Models;
 using Passingwind.Weixin.Mp.Models;
@@ -35,9 +35,9 @@ namespace Passingwind.Weixin.Mp.Apis
         /// </remarks>
         public async Task<JsonResultModel> UpdateRemarkAsync(string openId, string remark)
         {
-            string url = $"{ServerUrl.MPAPI_URL}/user/info/updateremark?access_token={_api.Token?.AccessToken}";
+            string url = $"{ServerUrl.MP_API_URL}/user/info/updateremark?access_token={_api.Token?.AccessToken}";
 
-            return (await HttpHelper.PostAsync<UpdateRemarkRequestModel, JsonResultModel>(url, new UpdateRemarkRequestModel() { Remark = remark, Openid = openId }, PostDataFormat.Json)).Data;
+            return (await HttpHelper.PostAsync<UpdateRemarkRequestModel, JsonResultModel>(url, new UpdateRemarkRequestModel() { Remark = remark, Openid = openId }, PostDataType.Json)).Data;
         }
 
         #endregion
@@ -59,7 +59,7 @@ namespace Passingwind.Weixin.Mp.Apis
                 throw new ArgumentNullException(nameof(model));
             }
 
-            string url = $"{ServerUrl.MPAPI_URL}/user/info?access_token={_api.Token?.AccessToken}&openid={model.Openid}&lang={model.Lang}";
+            string url = $"{ServerUrl.MP_API_URL}/user/info?access_token={_api.Token?.AccessToken}&openid={model.Openid}&lang={model.Lang}";
 
             return (await HttpHelper.GetAsync<UserInfoResultModel>(url)).Data;
         }
@@ -80,14 +80,14 @@ namespace Passingwind.Weixin.Mp.Apis
             if (models.Length == 0)
                 return null;
 
-            string url = $"{ServerUrl.MPAPI_URL}/user/info/batchget?access_token={_api.Token?.AccessToken}";
+            string url = $"{ServerUrl.MP_API_URL}/user/info/batchget?access_token={_api.Token?.AccessToken}";
 
             var request = new
             {
                 user_list = models,
             };
 
-            return (await HttpHelper.PostAsync<BatchGetUserInfoResultModel>(url, request, PostDataFormat.Json)).Data;
+            return (await HttpHelper.PostAsync<BatchGetUserInfoResultModel>(url, request, PostDataType.Json)).Data;
         }
 
         #endregion
@@ -103,7 +103,7 @@ namespace Passingwind.Weixin.Mp.Apis
         /// </remarks>
         public async Task<UserListResultModel> GetListAsync(string next_openid = null)
         {
-            string url = $"{ServerUrl.MPAPI_URL}/user/get?access_token={_api.Token?.AccessToken}&next_openid={next_openid}";
+            string url = $"{ServerUrl.MP_API_URL}/user/get?access_token={_api.Token?.AccessToken}&next_openid={next_openid}";
 
             return (await HttpHelper.GetAsync<UserListResultModel>(url)).Data;
         }
@@ -125,7 +125,7 @@ namespace Passingwind.Weixin.Mp.Apis
                 throw new ArgumentException("message", nameof(name));
             }
 
-            string url = $"{ServerUrl.MPAPI_URL}/tags/create?access_token={AccessToken}";
+            string url = $"{ServerUrl.MP_API_URL}/tags/create?access_token={AccessToken}";
 
             var data = new { tag = new { name = name } };
 
@@ -140,7 +140,7 @@ namespace Passingwind.Weixin.Mp.Apis
         /// </example>
         public async Task<TagListResultModel> GetTags()
         {
-            string url = $"{ServerUrl.MPAPI_URL}/tags/get?access_token={AccessToken}";
+            string url = $"{ServerUrl.MP_API_URL}/tags/get?access_token={AccessToken}";
 
             return (await HttpHelper.GetAsync<TagListResultModel>(url)).Data;
         }
@@ -158,7 +158,7 @@ namespace Passingwind.Weixin.Mp.Apis
                 throw new ArgumentNullException(nameof(tag));
             }
 
-            string url = $"{ServerUrl.MPAPI_URL}/tags/update?access_token={AccessToken}";
+            string url = $"{ServerUrl.MP_API_URL}/tags/update?access_token={AccessToken}";
 
             var data = new { tag = tag };
 
@@ -178,7 +178,7 @@ namespace Passingwind.Weixin.Mp.Apis
                 throw new ArgumentException(nameof(id));
             }
 
-            string url = $"{ServerUrl.MPAPI_URL}/tags/delete?access_token={AccessToken}";
+            string url = $"{ServerUrl.MP_API_URL}/tags/delete?access_token={AccessToken}";
 
             var data = new { tag = new { id = id } };
 
@@ -198,7 +198,7 @@ namespace Passingwind.Weixin.Mp.Apis
                 throw new ArgumentException(nameof(id));
             }
 
-            string url = $"{ServerUrl.MPAPI_URL}/user/tag/get?access_token={AccessToken}";
+            string url = $"{ServerUrl.MP_API_URL}/user/tag/get?access_token={AccessToken}";
 
             var data = new { tagid = id, next_openid = nextOpenid };
 
@@ -223,7 +223,7 @@ namespace Passingwind.Weixin.Mp.Apis
                 throw new ArgumentNullException(nameof(openIds));
             }
 
-            string url = $"{ServerUrl.MPAPI_URL}/tags/members/batchtagging?access_token={AccessToken}";
+            string url = $"{ServerUrl.MP_API_URL}/tags/members/batchtagging?access_token={AccessToken}";
 
             var data = new { openid_list = openIds, tagid = id };
 
@@ -248,7 +248,7 @@ namespace Passingwind.Weixin.Mp.Apis
                 throw new ArgumentNullException(nameof(openIds));
             }
 
-            string url = $"{ServerUrl.MPAPI_URL}/tags/members/batchuntagging?access_token={AccessToken}";
+            string url = $"{ServerUrl.MP_API_URL}/tags/members/batchuntagging?access_token={AccessToken}";
 
             var data = new { openid_list = openIds, tagid = id };
 
@@ -268,7 +268,7 @@ namespace Passingwind.Weixin.Mp.Apis
                 throw new ArgumentException("message", nameof(openId));
             }
 
-            string url = $"{ServerUrl.MPAPI_URL}/tags/getidlist?access_token={AccessToken}";
+            string url = $"{ServerUrl.MP_API_URL}/tags/getidlist?access_token={AccessToken}";
 
             var data = new { openid = openId };
 
@@ -287,9 +287,45 @@ namespace Passingwind.Weixin.Mp.Apis
         /// </example>
         public async Task<UserBlackListResultModel> GetBlackList(string beginOpenid = null)
         {
-            string url = $"{ServerUrl.MPAPI_URL}/tags/members/getblacklist?access_token={AccessToken}";
+            string url = $"{ServerUrl.MP_API_URL}/tags/members/getblacklist?access_token={AccessToken}";
 
             return (await HttpHelper.PostAsync<UserBlackListResultModel>(url, new { begin_openid = beginOpenid })).Data;
+        }
+
+        /// <summary>
+        ///  拉黑用户
+        /// </summary> 
+        /// <example>
+        ///  <![CDATA[https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1471422259_pJMWA]]>
+        /// </example>
+        public async Task<JsonResultModel> BatchBlackList(params string[] openIds)
+        {
+            if (openIds == null)
+            {
+                throw new ArgumentNullException(nameof(openIds));
+            }
+
+            string url = $"{ServerUrl.MP_API_URL}/tags/members/batchblacklist?access_token={AccessToken}";
+
+            return (await HttpHelper.PostAsync<JsonResultModel>(url, new { openid_list = openIds })).Data;
+        }
+
+        /// <summary>
+        ///  取消拉黑用户
+        /// </summary> 
+        /// <example>
+        ///  <![CDATA[https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1471422259_pJMWA]]>
+        /// </example>
+        public async Task<JsonResultModel> BatchUnBlackList(params string[] openIds)
+        {
+            if (openIds == null)
+            {
+                throw new ArgumentNullException(nameof(openIds));
+            }
+
+            string url = $"{ServerUrl.MP_API_URL}/tags/members/batchunblacklist?access_token={AccessToken}";
+
+            return (await HttpHelper.PostAsync<JsonResultModel>(url, new { openid_list = openIds })).Data;
         }
 
         #endregion

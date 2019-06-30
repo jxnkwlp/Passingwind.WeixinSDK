@@ -1,4 +1,4 @@
-﻿using Passingwind.Weixin.Common;
+using Passingwind.Weixin.Common;
 using Passingwind.Weixin.Common.Utils;
 using Passingwind.Weixin.Models;
 using Passingwind.Weixin.Mp.Apis;
@@ -43,7 +43,7 @@ namespace Passingwind.Weixin.Mp
         {
             if (this.Token == null || this.Token.IsExpired() || force)
             {
-                string url = ServerUrl.MPAPI_URL + $"/token?grant_type=client_credential&appid={AppId}&secret={_appSecret}";
+                string url = ServerUrl.MP_API_URL + $"/token?grant_type=client_credential&appid={AppId}&secret={_appSecret}";
 
                 var result = await HttpHelper.GetAsync<AccessTokenModel>(url);
                 if (result.Success)
@@ -92,6 +92,10 @@ namespace Passingwind.Weixin.Mp
         public CommonApi CommonApi => new CommonApi(this);
 
         public UserApi UserApi => new UserApi(this);
+
+        public MenuApi MenuApi => new MenuApi(this);
+
+        public MediaApi MediaApi => new MediaApi(this);
 
         #endregion
     }
