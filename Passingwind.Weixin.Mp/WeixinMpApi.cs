@@ -1,11 +1,12 @@
 using Passingwind.Weixin.Common;
 using Passingwind.Weixin.Common.Utils;
+using Passingwind.Weixin.Dependency;
+using Passingwind.Weixin.Http;
+using Passingwind.Weixin.Logger;
 using Passingwind.Weixin.Models;
 using Passingwind.Weixin.Mp.Apis;
 using Passingwind.Weixin.Mp.Services;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Passingwind.Weixin.Mp
@@ -19,8 +20,14 @@ namespace Passingwind.Weixin.Mp
 
         public IAccessTokenStoreService AccessTokenStoreService { get; private set; }
 
+        public ILogger Logger { get; private set; }
+
+        public IHttpService HttpService { get; private set; }
+
         public WeixinMpApi(string appId, string appSecret)
         {
+            Init();
+
             AppId = appId;
             _appSecret = appSecret;
 
@@ -45,7 +52,7 @@ namespace Passingwind.Weixin.Mp
             {
                 string url = ServerUrl.MP_API_URL + $"/token?grant_type=client_credential&appid={AppId}&secret={_appSecret}";
 
-                var result = await HttpHelper.GetAsync<AccessTokenModel>(url);
+                var result = await HttpService.GetAsync<AccessTokenModel>(url);
                 if (result.Success)
                 {
                     var data = result.Data;
@@ -79,13 +86,15 @@ namespace Passingwind.Weixin.Mp
             return this.Token;
         }
 
-
+        protected void Init()
+        {
+            this.Logger = DependencyManager.Resolve<ILogger>();
+            this.HttpService = DependencyManager.Resolve<IHttpService>();
+        }
 
         protected void CheckAccessToken()
         {
-
         }
-
 
         #region Apis
 
@@ -98,5 +107,6 @@ namespace Passingwind.Weixin.Mp
         public MediaApi MediaApi => new MediaApi(this);
 
         #endregion
+
     }
 }

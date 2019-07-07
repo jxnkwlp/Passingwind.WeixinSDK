@@ -1,5 +1,7 @@
 ﻿using Passingwind.Weixin.Common;
 using Passingwind.Weixin.Common.Utils;
+using Passingwind.Weixin.Http;
+using Passingwind.Weixin.Logger;
 using Passingwind.Weixin.Models;
 using Passingwind.Weixin.Mp.Models.Media;
 using System;
@@ -18,6 +20,10 @@ namespace Passingwind.Weixin.Mp.Apis
 
         protected string AccessToken => _api.Token?.AccessToken;
 
+        protected ILogger Logger => _api.Logger;
+
+        protected IHttpService HttpService => _api.HttpService;
+
         public MediaApi(WeixinMpApi api)
         {
             _api = api;
@@ -35,7 +41,7 @@ namespace Passingwind.Weixin.Mp.Apis
         {
             string url = $"{ServerUrl.MP_API_URL}/media/upload?access_token={_api.Token?.AccessToken}&type={upload.Type.ToString().ToLower()}";
 
-            return (await HttpHelper.PostAsync<MediaUploadRequestModel, MediaUploadResultModel>(url, upload, PostDataType.FormData)).Data;
+            return (await HttpService.PostAsync<MediaUploadRequestModel, MediaUploadResultModel>(url, upload, PostDataType.FormData)).Data;
         }
 
         /// <summary>
@@ -53,7 +59,7 @@ namespace Passingwind.Weixin.Mp.Apis
 
             string url = $"{ServerUrl.MP_API_URL}/media/get?access_token={_api.Token?.AccessToken}&media_id={mediaId}";
 
-            var response = await HttpHelper.GetAsync(url);
+            var response = await HttpService.GetAsync(url);
             if (response.Success)
             {
                 if (response.ContentDisposition?.StartsWith("attachment") == true)
@@ -86,7 +92,7 @@ namespace Passingwind.Weixin.Mp.Apis
 
             string url = $"{ServerUrl.MP_API_URL}/media/get/jssdk?access_token={_api.Token?.AccessToken}&media_id={mediaId}";
 
-            var response = await HttpHelper.GetAsync(url);
+            var response = await HttpService.GetAsync(url);
             if (response.Success)
             {
                 if (response.ContentDisposition?.StartsWith("attachment") == true)
@@ -123,7 +129,7 @@ namespace Passingwind.Weixin.Mp.Apis
 
             var data = new { articles = model };
 
-            return (await HttpHelper.PostAsync<AddMaterialNewsResultModel>(url, data)).Data;
+            return (await HttpService.PostAsync<AddMaterialNewsResultModel>(url, data)).Data;
         }
 
         /// <summary>
@@ -139,7 +145,7 @@ namespace Passingwind.Weixin.Mp.Apis
 
             string url = $"{ServerUrl.MP_API_URL}/material/add_material?access_token={_api.Token?.AccessToken}&type={model.Type.ToString().ToLower()}";
 
-            return (await HttpHelper.PostAsync<AddMaterialRequestModel, AddMaterialResultModel>(url, model, PostDataType.FormData)).Data;
+            return (await HttpService.PostAsync<AddMaterialRequestModel, AddMaterialResultModel>(url, model, PostDataType.FormData)).Data;
         }
 
         /// <summary>
@@ -155,7 +161,7 @@ namespace Passingwind.Weixin.Mp.Apis
 
             string url = $"{ServerUrl.MP_API_URL}/media/uploadimg?access_token={_api.Token?.AccessToken} ";
 
-            return (await HttpHelper.PostAsync<UploadImageResultModel>(url, new { media = file }, PostDataType.FormData)).Data;
+            return (await HttpService.PostAsync<UploadImageResultModel>(url, new { media = file }, PostDataType.FormData)).Data;
         }
 
 
@@ -176,7 +182,7 @@ namespace Passingwind.Weixin.Mp.Apis
 
             var data = new { media_id = mediaId };
 
-            var response = await HttpHelper.PostAsync<GetMaterialResultModel>(url, data);
+            var response = await HttpService.PostAsync<GetMaterialResultModel>(url, data);
             if (response.Success)
             {
                 if (response.ContentDisposition?.StartsWith("attachment") == true)
@@ -207,7 +213,7 @@ namespace Passingwind.Weixin.Mp.Apis
 
             var data = new { media_id = mediaId };
 
-            return (await HttpHelper.PostAsync<JsonResultModel>(url, data)).Data;
+            return (await HttpService.PostAsync<JsonResultModel>(url, data)).Data;
         }
 
         /// <summary>
@@ -223,7 +229,7 @@ namespace Passingwind.Weixin.Mp.Apis
 
             string url = $"{ServerUrl.MP_API_URL}/material/update_news?access_token={_api.Token?.AccessToken} ";
 
-            return (await HttpHelper.PostAsync<JsonResultModel>(url, model)).Data;
+            return (await HttpService.PostAsync<JsonResultModel>(url, model)).Data;
         }
 
         /// <summary>
@@ -236,7 +242,7 @@ namespace Passingwind.Weixin.Mp.Apis
         {
             string url = $"{ServerUrl.MP_API_URL}/material/get_materialcount?access_token={_api.Token?.AccessToken} ";
 
-            return (await HttpHelper.GetAsync<GetMaterialCountResultModel>(url)).Data;
+            return (await HttpService.GetAsync<GetMaterialCountResultModel>(url)).Data;
         }
 
 
@@ -253,7 +259,7 @@ namespace Passingwind.Weixin.Mp.Apis
 
             string url = $"{ServerUrl.MP_API_URL}/material/batchget_material?access_token={_api.Token?.AccessToken} ";
 
-            return (await HttpHelper.PostAsync<BatchGetMaterialResultModel>(url, model)).Data;
+            return (await HttpService.PostAsync<BatchGetMaterialResultModel>(url, model)).Data;
         }
 
         #endregion

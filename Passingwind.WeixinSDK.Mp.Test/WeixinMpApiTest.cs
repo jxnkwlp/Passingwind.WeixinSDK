@@ -1,3 +1,4 @@
+using Passingwind.Weixin;
 using Passingwind.Weixin.Models;
 using Passingwind.Weixin.Mp;
 using Passingwind.Weixin.Mp.Models;
@@ -18,6 +19,8 @@ namespace Passingwind.WeixinSDK.Apis
 
         public WeixinMpApiTest()
         {
+            WeixinServiceRegister.Register();
+
             string appId = "wxa60caa8a4543d3fa";
             string appSecret = "4f141b47bca5755a169d46584982186a";
 

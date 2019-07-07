@@ -1,5 +1,7 @@
 using Passingwind.Weixin.Common;
 using Passingwind.Weixin.Common.Utils;
+using Passingwind.Weixin.Http;
+using Passingwind.Weixin.Logger;
 using Passingwind.Weixin.Models;
 using Passingwind.Weixin.Mp.Models;
 using System;
@@ -17,6 +19,10 @@ namespace Passingwind.Weixin.Mp.Apis
         private readonly WeixinMpApi _api;
 
         protected string AccessToken => _api.Token?.AccessToken;
+
+        protected ILogger Logger => _api.Logger;
+
+        protected IHttpService HttpService => _api.HttpService;
 
         public UserApi(WeixinMpApi api)
         {
@@ -37,7 +43,7 @@ namespace Passingwind.Weixin.Mp.Apis
         {
             string url = $"{ServerUrl.MP_API_URL}/user/info/updateremark?access_token={_api.Token?.AccessToken}";
 
-            return (await HttpHelper.PostAsync<UpdateRemarkRequestModel, JsonResultModel>(url, new UpdateRemarkRequestModel() { Remark = remark, Openid = openId }, PostDataType.Json)).Data;
+            return (await HttpService.PostAsync<UpdateRemarkRequestModel, JsonResultModel>(url, new UpdateRemarkRequestModel() { Remark = remark, Openid = openId }, PostDataType.Json)).Data;
         }
 
         #endregion
@@ -61,7 +67,7 @@ namespace Passingwind.Weixin.Mp.Apis
 
             string url = $"{ServerUrl.MP_API_URL}/user/info?access_token={_api.Token?.AccessToken}&openid={model.Openid}&lang={model.Lang}";
 
-            return (await HttpHelper.GetAsync<UserInfoResultModel>(url)).Data;
+            return (await HttpService.GetAsync<UserInfoResultModel>(url)).Data;
         }
 
         /// <summary>
@@ -87,7 +93,7 @@ namespace Passingwind.Weixin.Mp.Apis
                 user_list = models,
             };
 
-            return (await HttpHelper.PostAsync<BatchGetUserInfoResultModel>(url, request, PostDataType.Json)).Data;
+            return (await HttpService.PostAsync<BatchGetUserInfoResultModel>(url, request, PostDataType.Json)).Data;
         }
 
         #endregion
@@ -105,7 +111,7 @@ namespace Passingwind.Weixin.Mp.Apis
         {
             string url = $"{ServerUrl.MP_API_URL}/user/get?access_token={_api.Token?.AccessToken}&next_openid={next_openid}";
 
-            return (await HttpHelper.GetAsync<UserListResultModel>(url)).Data;
+            return (await HttpService.GetAsync<UserListResultModel>(url)).Data;
         }
 
         #endregion
@@ -129,7 +135,7 @@ namespace Passingwind.Weixin.Mp.Apis
 
             var data = new { tag = new { name = name } };
 
-            return (await HttpHelper.PostAsync<TagCreaterResultModel>(url, data)).Data;
+            return (await HttpService.PostAsync<TagCreaterResultModel>(url, data)).Data;
         }
 
         /// <summary>
@@ -142,7 +148,7 @@ namespace Passingwind.Weixin.Mp.Apis
         {
             string url = $"{ServerUrl.MP_API_URL}/tags/get?access_token={AccessToken}";
 
-            return (await HttpHelper.GetAsync<TagListResultModel>(url)).Data;
+            return (await HttpService.GetAsync<TagListResultModel>(url)).Data;
         }
 
         /// <summary>
@@ -162,7 +168,7 @@ namespace Passingwind.Weixin.Mp.Apis
 
             var data = new { tag = tag };
 
-            return (await HttpHelper.PostAsync<JsonResultModel>(url, data)).Data;
+            return (await HttpService.PostAsync<JsonResultModel>(url, data)).Data;
         }
 
         /// <summary>
@@ -182,7 +188,7 @@ namespace Passingwind.Weixin.Mp.Apis
 
             var data = new { tag = new { id = id } };
 
-            return (await HttpHelper.PostAsync<JsonResultModel>(url, data)).Data;
+            return (await HttpService.PostAsync<JsonResultModel>(url, data)).Data;
         }
 
         /// <summary>
@@ -202,7 +208,7 @@ namespace Passingwind.Weixin.Mp.Apis
 
             var data = new { tagid = id, next_openid = nextOpenid };
 
-            return (await HttpHelper.PostAsync<TagsGetResultModel>(url, data)).Data;
+            return (await HttpService.PostAsync<TagsGetResultModel>(url, data)).Data;
         }
 
         /// <summary>
@@ -227,7 +233,7 @@ namespace Passingwind.Weixin.Mp.Apis
 
             var data = new { openid_list = openIds, tagid = id };
 
-            return (await HttpHelper.PostAsync<JsonResultModel>(url, data)).Data;
+            return (await HttpService.PostAsync<JsonResultModel>(url, data)).Data;
         }
 
         /// <summary>
@@ -252,7 +258,7 @@ namespace Passingwind.Weixin.Mp.Apis
 
             var data = new { openid_list = openIds, tagid = id };
 
-            return (await HttpHelper.PostAsync<JsonResultModel>(url, data)).Data;
+            return (await HttpService.PostAsync<JsonResultModel>(url, data)).Data;
         }
 
         /// <summary>
@@ -272,7 +278,7 @@ namespace Passingwind.Weixin.Mp.Apis
 
             var data = new { openid = openId };
 
-            return (await HttpHelper.PostAsync<MemberTagsResultModel>(url, data)).Data;
+            return (await HttpService.PostAsync<MemberTagsResultModel>(url, data)).Data;
         }
 
         #endregion
@@ -289,7 +295,7 @@ namespace Passingwind.Weixin.Mp.Apis
         {
             string url = $"{ServerUrl.MP_API_URL}/tags/members/getblacklist?access_token={AccessToken}";
 
-            return (await HttpHelper.PostAsync<UserBlackListResultModel>(url, new { begin_openid = beginOpenid })).Data;
+            return (await HttpService.PostAsync<UserBlackListResultModel>(url, new { begin_openid = beginOpenid })).Data;
         }
 
         /// <summary>
@@ -307,7 +313,7 @@ namespace Passingwind.Weixin.Mp.Apis
 
             string url = $"{ServerUrl.MP_API_URL}/tags/members/batchblacklist?access_token={AccessToken}";
 
-            return (await HttpHelper.PostAsync<JsonResultModel>(url, new { openid_list = openIds })).Data;
+            return (await HttpService.PostAsync<JsonResultModel>(url, new { openid_list = openIds })).Data;
         }
 
         /// <summary>
@@ -325,7 +331,7 @@ namespace Passingwind.Weixin.Mp.Apis
 
             string url = $"{ServerUrl.MP_API_URL}/tags/members/batchunblacklist?access_token={AccessToken}";
 
-            return (await HttpHelper.PostAsync<JsonResultModel>(url, new { openid_list = openIds })).Data;
+            return (await HttpService.PostAsync<JsonResultModel>(url, new { openid_list = openIds })).Data;
         }
 
         #endregion

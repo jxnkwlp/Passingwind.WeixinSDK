@@ -2,6 +2,7 @@
 
 namespace Passingwind.Weixin.Logger
 {
+	[Obsolete]
     public class LoggerManager
     {
         static ILogger _logger = new NullLogger();

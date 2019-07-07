@@ -1,5 +1,7 @@
 ﻿using Passingwind.Weixin.Common;
 using Passingwind.Weixin.Common.Utils;
+using Passingwind.Weixin.Http;
+using Passingwind.Weixin.Logger;
 using Passingwind.Weixin.Models;
 using Passingwind.Weixin.Mp.Models.Comments;
 using System;
@@ -12,6 +14,10 @@ namespace Passingwind.Weixin.Mp.Apis
         private readonly WeixinMpApi _api;
 
         protected string AccessToken => _api.Token?.AccessToken;
+
+        protected ILogger Logger => _api.Logger;
+
+        protected IHttpService HttpService => _api.HttpService;
 
         public CommentApi(WeixinMpApi api)
         {
@@ -31,7 +37,7 @@ namespace Passingwind.Weixin.Mp.Apis
 
             string url = $"{ServerUrl.MP_API_URL}/comment/open?access_token={_api.Token?.AccessToken}";
 
-            return (await HttpHelper.PostAsync<JsonResultModel>(url, model)).Data;
+            return (await HttpService.PostAsync<JsonResultModel>(url, model)).Data;
         }
 
         /// <summary>
@@ -47,7 +53,7 @@ namespace Passingwind.Weixin.Mp.Apis
 
             string url = $"{ServerUrl.MP_API_URL}/comment/close?access_token={_api.Token?.AccessToken}";
 
-            return (await HttpHelper.PostAsync<JsonResultModel>(url, model)).Data;
+            return (await HttpService.PostAsync<JsonResultModel>(url, model)).Data;
         }
 
         /// <summary>
@@ -63,7 +69,7 @@ namespace Passingwind.Weixin.Mp.Apis
 
             string url = $"{ServerUrl.MP_API_URL}/comment/list?access_token={_api.Token?.AccessToken}";
 
-            return (await HttpHelper.PostAsync<CommentListResultModel>(url, model)).Data;
+            return (await HttpService.PostAsync<CommentListResultModel>(url, model)).Data;
         }
 
         /// <summary>
@@ -79,7 +85,7 @@ namespace Passingwind.Weixin.Mp.Apis
 
             string url = $"{ServerUrl.MP_API_URL}/comment/markelect?access_token={_api.Token?.AccessToken}";
 
-            return (await HttpHelper.PostAsync<JsonResultModel>(url, model)).Data;
+            return (await HttpService.PostAsync<JsonResultModel>(url, model)).Data;
         }
 
         /// <summary>
@@ -95,7 +101,7 @@ namespace Passingwind.Weixin.Mp.Apis
 
             string url = $"{ServerUrl.MP_API_URL}/comment/unmarkelect?access_token={_api.Token?.AccessToken}";
 
-            return (await HttpHelper.PostAsync<JsonResultModel>(url, model)).Data;
+            return (await HttpService.PostAsync<JsonResultModel>(url, model)).Data;
         }
 
         /// <summary>
@@ -111,7 +117,7 @@ namespace Passingwind.Weixin.Mp.Apis
 
             string url = $"{ServerUrl.MP_API_URL}/comment/delete?access_token={_api.Token?.AccessToken}";
 
-            return (await HttpHelper.PostAsync<JsonResultModel>(url, model)).Data;
+            return (await HttpService.PostAsync<JsonResultModel>(url, model)).Data;
         }
 
         /// <summary>
@@ -127,7 +133,7 @@ namespace Passingwind.Weixin.Mp.Apis
 
             string url = $"{ServerUrl.MP_API_URL}/comment/reply/add?access_token={_api.Token?.AccessToken}";
 
-            return (await HttpHelper.PostAsync<JsonResultModel>(url, model)).Data;
+            return (await HttpService.PostAsync<JsonResultModel>(url, model)).Data;
         }
 
         /// <summary>
@@ -143,7 +149,7 @@ namespace Passingwind.Weixin.Mp.Apis
 
             string url = $"{ServerUrl.MP_API_URL}/comment/reply/delete?access_token={_api.Token?.AccessToken}";
 
-            return (await HttpHelper.PostAsync<JsonResultModel>(url, model)).Data;
+            return (await HttpService.PostAsync<JsonResultModel>(url, model)).Data;
         }
     }
 }

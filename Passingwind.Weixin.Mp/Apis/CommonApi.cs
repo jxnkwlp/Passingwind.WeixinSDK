@@ -1,5 +1,7 @@
 ﻿using Passingwind.Weixin.Common;
-using Passingwind.Weixin.Common.Utils;
+using Passingwind.Weixin.Http;
+using Passingwind.Weixin.Logger;
+using Passingwind.Weixin.Models;
 using Passingwind.Weixin.Mp.Models;
 using System.Threading.Tasks;
 
@@ -11,6 +13,10 @@ namespace Passingwind.Weixin.Mp.Apis
     public class CommonApi
     {
         private readonly WeixinMpApi _api;
+
+        protected ILogger Logger => _api.Logger;
+
+        protected IHttpService HttpService => _api.HttpService;
 
         public CommonApi(WeixinMpApi api)
         {
@@ -25,7 +31,7 @@ namespace Passingwind.Weixin.Mp.Apis
         /// </remarks>
         public async Task<CallbackIpJsonReturnModel> GetCallbackIpAsync()
         {
-            return (await HttpHelper.GetAsync<CallbackIpJsonReturnModel>($"{ServerUrl.MP_API_URL}/getcallbackip?access_token={_api.Token?.AccessToken}")).Data;
+            return (await HttpService.GetAsync<CallbackIpJsonReturnModel>($"{ServerUrl.MP_API_URL}/getcallbackip?access_token={_api.Token?.AccessToken}")).Data;
         }
 
 
@@ -38,7 +44,7 @@ namespace Passingwind.Weixin.Mp.Apis
         public async Task<CheckResultModel> CheckAsync(CheckRequest request)
         {
             var url = $"{ServerUrl.MP_API_URL}/callback/check?access_token={_api.Token?.AccessToken}";
-            return (await HttpHelper.PostAsync<CheckRequest, CheckResultModel>(url, request, PostDataType.Json)).Data;
+            return (await HttpService.PostAsync<CheckRequest, CheckResultModel>(url, request, PostDataType.Json)).Data;
         }
     }
 }

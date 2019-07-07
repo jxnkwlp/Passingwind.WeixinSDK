@@ -1,5 +1,7 @@
 using Passingwind.Weixin.Common;
 using Passingwind.Weixin.Common.Utils;
+using Passingwind.Weixin.Http;
+using Passingwind.Weixin.Logger;
 using Passingwind.Weixin.Models;
 using Passingwind.Weixin.Mp.Models.Menus;
 using System;
@@ -18,6 +20,10 @@ namespace Passingwind.Weixin.Mp.Apis
 
         protected string AccessToken => _api.Token?.AccessToken;
 
+        protected ILogger Logger => _api.Logger;
+
+        protected IHttpService HttpService => _api.HttpService;
+
         public MenuApi(WeixinMpApi api)
         {
             _api = api;
@@ -35,7 +41,7 @@ namespace Passingwind.Weixin.Mp.Apis
         {
             string url = $"{ServerUrl.MP_API_URL}/menu/get?access_token={_api.Token?.AccessToken}";
 
-            return (await HttpHelper.GetAsync<MenuResultModel>(url)).Data;
+            return (await HttpService.GetAsync<MenuResultModel>(url)).Data;
         }
          
         /// <summary>
@@ -53,7 +59,7 @@ namespace Passingwind.Weixin.Mp.Apis
 
             string url = $"{ServerUrl.MP_API_URL}/menu/create?access_token={_api.Token?.AccessToken}";
 
-            return (await HttpHelper.PostAsync<JsonResultModel>(url, model)).Data;
+            return (await HttpService.PostAsync<JsonResultModel>(url, model)).Data;
         }
 
         /// <summary>
@@ -66,7 +72,7 @@ namespace Passingwind.Weixin.Mp.Apis
         {
             string url = $"{ServerUrl.MP_API_URL}/menu/delete?access_token={_api.Token?.AccessToken}";
 
-            return (await HttpHelper.GetAsync<JsonResultModel>(url)).Data;
+            return (await HttpService.GetAsync<JsonResultModel>(url)).Data;
         }
 
         #endregion
@@ -88,7 +94,7 @@ namespace Passingwind.Weixin.Mp.Apis
 
             string url = $"{ServerUrl.MP_API_URL}/menu/addconditional?access_token={_api.Token?.AccessToken}";
 
-            return (await HttpHelper.PostAsync<AddConditionalResultModel>(url, model)).Data;
+            return (await HttpService.PostAsync<AddConditionalResultModel>(url, model)).Data;
         }
 
         /// <summary>
@@ -101,7 +107,7 @@ namespace Passingwind.Weixin.Mp.Apis
         {
             string url = $"{ServerUrl.MP_API_URL}/menu/delconditional?access_token={_api.Token?.AccessToken}";
 
-            return (await HttpHelper.PostAsync<JsonResultModel>(url)).Data;
+            return (await HttpService.PostAsync<JsonResultModel>(url)).Data;
         }
 
         /// <summary>
@@ -119,7 +125,7 @@ namespace Passingwind.Weixin.Mp.Apis
 
             string url = $"{ServerUrl.MP_API_URL}/menu/trymatch?access_token={_api.Token?.AccessToken}";
 
-            return (await HttpHelper.PostAsync<MenuResultModel>(url, new { user_id = userId })).Data;
+            return (await HttpService.PostAsync<MenuResultModel>(url, new { user_id = userId })).Data;
         }
 
         #endregion
@@ -136,7 +142,7 @@ namespace Passingwind.Weixin.Mp.Apis
         {
             string url = $"{ServerUrl.MP_API_URL}/get_current_selfmenu_info?access_token={_api.Token?.AccessToken}";
 
-            return (await HttpHelper.GetAsync<MenuResultModel>(url)).Data;
+            return (await HttpService.GetAsync<MenuResultModel>(url)).Data;
         }
          
         #endregion
