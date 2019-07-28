@@ -4,11 +4,20 @@
 
 # Usage
 ``` c#
-// 必须
-WeixinServiceRegister.Register();
+// 必须。一般放在应用启动的地方。
+WeixinServiceRegister
+	.Register()
+	.AddMpService();// 注册公众号相关服务
+ 
+//注册账号
+WeixinMpApiContainer.Register(new MPAccount()
+{
+    AppId = [appId],
+    AppSecret = [appSecret],
+});
 
 // 引用API
-var api = new WeixinMpApi([appId], [appSecret]);
+var api = WeixinMpApiContainer.GetInstance();
 
 // 比如
 var userList = await api.UserApi.GetListAsync();
@@ -24,28 +33,26 @@ var userList = await api.UserApi.GetListAsync();
 
 ### 公众平台
 
-[ ] 自定义菜单  
-[x] 消息管理   
-[x] 微信网页开发  
-[ ] 素材管理  
-[ ] 图文消息留言管理  
-[ ] 用户管理  
-[ ] 帐号管理  
-[ ] 数据统计  
-[x] 微信卡券  
-[x] 微信门店  
-[x] 微信小店  
-[x] 智能接口   
-[x] 新版客服功能  
-[x] 微信摇一摇周边  
-[x] 微信连Wi-Fi  
-[x] 微信一物一码  
-[x] 微信发票  
+[✔] 自定义菜单  
+[✘] 消息管理  
+[✘] 微信网页开发  
+[✔] 素材管理  
+[✔] 图文消息留言管理  
+[✔ 用户管理  
+[✔] 帐号管理  
+[✔] 数据统计  
+[✘] 微信卡券  
+[✘] 微信门店  
+[✘] 微信小店  
+[✘] 智能接口   
+[✘] 新版客服功能  
+[✘] 微信摇一摇周边  
+[✘] 微信连Wi-Fi  
+[✘] 微信一物一码  
+[✘] 微信发票  
  
 # TODO
-
-获取用户地理位置 https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140841
-
+ 
 自定义菜单事件推送 https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141016
 
 微信认证事件推送
