@@ -7,12 +7,11 @@ namespace Passingwind.Weixin.Logger
     /// </summary>
     public interface ILogger
     {
-        void Log(LogLevel level, Exception exception, string message, params string[] args);
+        void Log(string category, LogLevel level, Exception exception, string message, params string[] args);
     }
 
     public enum LogLevel
     {
-        Fatal,
         Error,
         Warn,
         Info,

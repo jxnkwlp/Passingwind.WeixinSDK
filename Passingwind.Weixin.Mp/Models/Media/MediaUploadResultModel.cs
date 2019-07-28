@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Passingwind.Weixin.Mp.Models.Media
+namespace Passingwind.Weixin.MP.Models.Media
 {
     public class MediaUploadResultModel : JsonResultModel
     {

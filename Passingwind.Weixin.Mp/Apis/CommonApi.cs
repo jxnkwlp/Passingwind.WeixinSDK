@@ -2,10 +2,10 @@
 using Passingwind.Weixin.Http;
 using Passingwind.Weixin.Logger;
 using Passingwind.Weixin.Models;
-using Passingwind.Weixin.Mp.Models;
+using Passingwind.Weixin.MP.Models;
 using System.Threading.Tasks;
 
-namespace Passingwind.Weixin.Mp.Apis
+namespace Passingwind.Weixin.MP.Apis
 {
     /// <summary>
     ///  通用API
@@ -17,6 +17,8 @@ namespace Passingwind.Weixin.Mp.Apis
         protected ILogger Logger => _api.Logger;
 
         protected IHttpService HttpService => _api.HttpService;
+
+        protected WeixinServerHostConfig ServerHostConfig => _api.ServerHostConfig;
 
         public CommonApi(WeixinMpApi api)
         {
@@ -31,7 +33,7 @@ namespace Passingwind.Weixin.Mp.Apis
         /// </remarks>
         public async Task<CallbackIpJsonReturnModel> GetCallbackIpAsync()
         {
-            return (await HttpService.GetAsync<CallbackIpJsonReturnModel>($"{ServerUrl.MP_API_URL}/getcallbackip?access_token={_api.Token?.AccessToken}")).Data;
+            return (await HttpService.GetAsync<CallbackIpJsonReturnModel>($"{ServerHostConfig.DefaultApiHost}/cgi-bin/cgi-bin/cgi-bin/getcallbackip?access_token={_api.Token?.AccessToken}")).Data;
         }
 
 
@@ -43,7 +45,7 @@ namespace Passingwind.Weixin.Mp.Apis
         /// </remarks>
         public async Task<CheckResultModel> CheckAsync(CheckRequest request)
         {
-            var url = $"{ServerUrl.MP_API_URL}/callback/check?access_token={_api.Token?.AccessToken}";
+            var url = $"{ServerHostConfig.DefaultApiHost}/cgi-bin/cgi-bin/cgi-bin/callback/check?access_token={_api.Token?.AccessToken}";
             return (await HttpService.PostAsync<CheckRequest, CheckResultModel>(url, request, PostDataType.Json)).Data;
         }
     }

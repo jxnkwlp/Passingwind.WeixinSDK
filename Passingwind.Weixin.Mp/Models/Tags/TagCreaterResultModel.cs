@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Passingwind.Weixin.Mp.Models
+namespace Passingwind.Weixin.MP.Models
 {
     public class TagCreaterResultModel : JsonResultModel
     {

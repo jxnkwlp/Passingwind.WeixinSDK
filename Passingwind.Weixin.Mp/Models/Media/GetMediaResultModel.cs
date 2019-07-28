@@ -1,6 +1,6 @@
 ﻿using Passingwind.Weixin.Models;
 
-namespace Passingwind.Weixin.Mp.Models.Media
+namespace Passingwind.Weixin.MP.Models.Media
 {
     public class GetMediaResultModel : JsonResultModel
     {

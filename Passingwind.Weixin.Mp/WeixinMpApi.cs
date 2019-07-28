@@ -1,46 +1,38 @@
 using Passingwind.Weixin.Common;
-using Passingwind.Weixin.Common.Utils;
 using Passingwind.Weixin.Dependency;
 using Passingwind.Weixin.Http;
-using Passingwind.Weixin.Logger;
 using Passingwind.Weixin.Models;
-using Passingwind.Weixin.Mp.Apis;
-using Passingwind.Weixin.Mp.Services;
+using Passingwind.Weixin.MP.Apis;
+using Passingwind.Weixin.MP.Services;
+using Passingwind.Weixin.Utils;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Passingwind.Weixin.Mp
+namespace Passingwind.Weixin.MP
 {
-    public class WeixinMpApi
+    public class WeixinMpApi : BaseApi
     {
-        private string _appSecret;
+        public MPAccount Account { get; private set; }
 
-        public string AppId { get; }
         public Token Token { get; private set; }
 
         public IAccessTokenStoreService AccessTokenStoreService { get; private set; }
 
-        public ILogger Logger { get; private set; }
-
-        public IHttpService HttpService { get; private set; }
-
-        public WeixinMpApi(string appId, string appSecret)
+        public WeixinMpApi(MPAccount account) : base()
         {
-            Init();
+            Account = account;
 
-            AppId = appId;
-            _appSecret = appSecret;
+            if (DependencyManager.TryResolve<IAccessTokenStoreService>(out var storeService))
+            {
+                AccessTokenStoreService = storeService;
+            }
+            else
+            {
+                AccessTokenStoreService = new DefaultAccessTokenStoreService();
+            }
 
-            AccessTokenStoreService = new AccessTokenStoreService();
-
-            _ = TryUpdateTokenAsync().Result;
-        }
-
-        public WeixinMpApi(string appId, string appSecret, IAccessTokenStoreService accessTokenStoreService) : this(appId, appSecret)
-        {
-            this.AccessTokenStoreService = accessTokenStoreService ?? throw new ArgumentNullException(nameof(accessTokenStoreService));
-
-            _ = TryUpdateTokenAsync().Result;
+            AsyncHelper.RunSync(() => TryUpdateTokenAsync(true));
         }
 
         /// <summary>
@@ -50,7 +42,7 @@ namespace Passingwind.Weixin.Mp
         {
             if (this.Token == null || this.Token.IsExpired() || force)
             {
-                string url = ServerUrl.MP_API_URL + $"/token?grant_type=client_credential&appid={AppId}&secret={_appSecret}";
+                string url = this.ServerHostConfig.DefaultApiHost + $"/cgi-bin/token?grant_type=client_credential&appid={Account.AppId}&secret={Account.AppSecret}";
 
                 var result = await HttpService.GetAsync<AccessTokenModel>(url);
                 if (result.Success)
@@ -81,19 +73,9 @@ namespace Passingwind.Weixin.Mp
             }
 
             if (this.Token != null)
-                this.AccessTokenStoreService.Write(this.AppId, this.Token);
+                this.AccessTokenStoreService.Write(this.Account.AppId, this.Token);
 
             return this.Token;
-        }
-
-        protected void Init()
-        {
-            this.Logger = DependencyManager.Resolve<ILogger>();
-            this.HttpService = DependencyManager.Resolve<IHttpService>();
-        }
-
-        protected void CheckAccessToken()
-        {
         }
 
         #region Apis

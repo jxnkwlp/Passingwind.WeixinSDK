@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Passingwind.Weixin.Mp\Passingwind.Weixin.Mp.csproj" />
+    <ProjectReference Include="..\Passingwind.Weixin.Mp\Passingwind.Weixin.MP.csproj" />
   </ItemGroup>
 
 </Project>

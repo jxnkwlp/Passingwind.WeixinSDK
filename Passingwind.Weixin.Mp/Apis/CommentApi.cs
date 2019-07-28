@@ -1,13 +1,11 @@
-﻿using Passingwind.Weixin.Common;
-using Passingwind.Weixin.Common.Utils;
-using Passingwind.Weixin.Http;
+﻿using Passingwind.Weixin.Http;
 using Passingwind.Weixin.Logger;
 using Passingwind.Weixin.Models;
-using Passingwind.Weixin.Mp.Models.Comments;
+using Passingwind.Weixin.MP.Models.Comments;
 using System;
 using System.Threading.Tasks;
 
-namespace Passingwind.Weixin.Mp.Apis
+namespace Passingwind.Weixin.MP.Apis
 {
     public class CommentApi
     {
@@ -18,6 +16,8 @@ namespace Passingwind.Weixin.Mp.Apis
         protected ILogger Logger => _api.Logger;
 
         protected IHttpService HttpService => _api.HttpService;
+
+        protected WeixinServerHostConfig ServerHostConfig => _api.ServerHostConfig;
 
         public CommentApi(WeixinMpApi api)
         {
@@ -35,7 +35,7 @@ namespace Passingwind.Weixin.Mp.Apis
             if (model == null)
                 throw new ArgumentNullException(nameof(model));
 
-            string url = $"{ServerUrl.MP_API_URL}/comment/open?access_token={_api.Token?.AccessToken}";
+            string url = $"{ServerHostConfig.DefaultApiHost}/cgi-bin/cgi-bin/comment/open?access_token={_api.Token?.AccessToken}";
 
             return (await HttpService.PostAsync<JsonResultModel>(url, model)).Data;
         }
@@ -51,7 +51,7 @@ namespace Passingwind.Weixin.Mp.Apis
             if (model == null)
                 throw new ArgumentNullException(nameof(model));
 
-            string url = $"{ServerUrl.MP_API_URL}/comment/close?access_token={_api.Token?.AccessToken}";
+            string url = $"{ServerHostConfig.DefaultApiHost}/cgi-bin/cgi-bin/comment/close?access_token={_api.Token?.AccessToken}";
 
             return (await HttpService.PostAsync<JsonResultModel>(url, model)).Data;
         }
@@ -67,7 +67,7 @@ namespace Passingwind.Weixin.Mp.Apis
             if (model == null)
                 throw new ArgumentNullException(nameof(model));
 
-            string url = $"{ServerUrl.MP_API_URL}/comment/list?access_token={_api.Token?.AccessToken}";
+            string url = $"{ServerHostConfig.DefaultApiHost}/cgi-bin/cgi-bin/comment/list?access_token={_api.Token?.AccessToken}";
 
             return (await HttpService.PostAsync<CommentListResultModel>(url, model)).Data;
         }
@@ -83,7 +83,7 @@ namespace Passingwind.Weixin.Mp.Apis
             if (model == null)
                 throw new ArgumentNullException(nameof(model));
 
-            string url = $"{ServerUrl.MP_API_URL}/comment/markelect?access_token={_api.Token?.AccessToken}";
+            string url = $"{ServerHostConfig.DefaultApiHost}/cgi-bin/cgi-bin/comment/markelect?access_token={_api.Token?.AccessToken}";
 
             return (await HttpService.PostAsync<JsonResultModel>(url, model)).Data;
         }
@@ -99,7 +99,7 @@ namespace Passingwind.Weixin.Mp.Apis
             if (model == null)
                 throw new ArgumentNullException(nameof(model));
 
-            string url = $"{ServerUrl.MP_API_URL}/comment/unmarkelect?access_token={_api.Token?.AccessToken}";
+            string url = $"{ServerHostConfig.DefaultApiHost}/cgi-bin/cgi-bin/comment/unmarkelect?access_token={_api.Token?.AccessToken}";
 
             return (await HttpService.PostAsync<JsonResultModel>(url, model)).Data;
         }
@@ -115,7 +115,7 @@ namespace Passingwind.Weixin.Mp.Apis
             if (model == null)
                 throw new ArgumentNullException(nameof(model));
 
-            string url = $"{ServerUrl.MP_API_URL}/comment/delete?access_token={_api.Token?.AccessToken}";
+            string url = $"{ServerHostConfig.DefaultApiHost}/cgi-bin/cgi-bin/comment/delete?access_token={_api.Token?.AccessToken}";
 
             return (await HttpService.PostAsync<JsonResultModel>(url, model)).Data;
         }
@@ -131,7 +131,7 @@ namespace Passingwind.Weixin.Mp.Apis
             if (model == null)
                 throw new ArgumentNullException(nameof(model));
 
-            string url = $"{ServerUrl.MP_API_URL}/comment/reply/add?access_token={_api.Token?.AccessToken}";
+            string url = $"{ServerHostConfig.DefaultApiHost}/cgi-bin/cgi-bin/comment/reply/add?access_token={_api.Token?.AccessToken}";
 
             return (await HttpService.PostAsync<JsonResultModel>(url, model)).Data;
         }
@@ -147,7 +147,7 @@ namespace Passingwind.Weixin.Mp.Apis
             if (model == null)
                 throw new ArgumentNullException(nameof(model));
 
-            string url = $"{ServerUrl.MP_API_URL}/comment/reply/delete?access_token={_api.Token?.AccessToken}";
+            string url = $"{ServerHostConfig.DefaultApiHost}/cgi-bin/cgi-bin/comment/reply/delete?access_token={_api.Token?.AccessToken}";
 
             return (await HttpService.PostAsync<JsonResultModel>(url, model)).Data;
         }

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Passingwind.Weixin.Mp.Models.Menus
+namespace Passingwind.Weixin.MP.Models.Menus
 {
     public class GetCurrentSelfMenuInfo : MenuResultModel
     {

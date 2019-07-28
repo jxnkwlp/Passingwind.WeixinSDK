@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Passingwind.Weixin.Mp.Models.Comments
+namespace Passingwind.Weixin.MP.Models.Comments
 {
     public class CommentItemModel
     {

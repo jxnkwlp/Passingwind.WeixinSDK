@@ -8,9 +8,5 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Passingwind.Weixin.Common\Passingwind.Weixin.Common.csproj" />
 	</ItemGroup>
-
-	<ItemGroup>
-		<Folder Include="Common\" />
-	</ItemGroup>
-
+ 
 </Project>

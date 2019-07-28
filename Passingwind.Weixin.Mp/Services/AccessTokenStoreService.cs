@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using Passingwind.Weixin.Common;
 
-namespace Passingwind.Weixin.Mp.Services
+namespace Passingwind.Weixin.MP.Services
 {
-    public class AccessTokenStoreService : IAccessTokenStoreService
+    public class DefaultAccessTokenStoreService : IAccessTokenStoreService
     {
         static Dictionary<string, Token> _tokens = new Dictionary<string, Token>();
 

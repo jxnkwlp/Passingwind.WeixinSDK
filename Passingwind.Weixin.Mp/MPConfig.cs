@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Passingwind.Weixin.Mp
+namespace Passingwind.Weixin.MP
 {
-    public class Account
+    public class MPConfig
     {
-
+        
     }
 }

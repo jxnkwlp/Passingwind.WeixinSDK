@@ -1,15 +1,11 @@
-using Passingwind.Weixin.Common;
-using Passingwind.Weixin.Common.Utils;
 using Passingwind.Weixin.Http;
 using Passingwind.Weixin.Logger;
 using Passingwind.Weixin.Models;
-using Passingwind.Weixin.Mp.Models.Menus;
+using Passingwind.Weixin.MP.Models.Menus;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace Passingwind.Weixin.Mp.Apis
+namespace Passingwind.Weixin.MP.Apis
 {
     /// <summary>
     ///  菜单相关
@@ -23,6 +19,8 @@ namespace Passingwind.Weixin.Mp.Apis
         protected ILogger Logger => _api.Logger;
 
         protected IHttpService HttpService => _api.HttpService;
+
+        protected WeixinServerHostConfig ServerHostConfig => _api.ServerHostConfig;
 
         public MenuApi(WeixinMpApi api)
         {
@@ -39,7 +37,7 @@ namespace Passingwind.Weixin.Mp.Apis
         /// </remarks>
         public async Task<MenuResultModel> GetAsync()
         {
-            string url = $"{ServerUrl.MP_API_URL}/menu/get?access_token={_api.Token?.AccessToken}";
+            string url = $"{ServerHostConfig.DefaultApiHost}/cgi-bin/menu/get?access_token={_api.Token?.AccessToken}";
 
             return (await HttpService.GetAsync<MenuResultModel>(url)).Data;
         }
@@ -57,7 +55,7 @@ namespace Passingwind.Weixin.Mp.Apis
                 throw new ArgumentNullException(nameof(model));
             }
 
-            string url = $"{ServerUrl.MP_API_URL}/menu/create?access_token={_api.Token?.AccessToken}";
+            string url = $"{ServerHostConfig.DefaultApiHost}/cgi-bin/menu/create?access_token={_api.Token?.AccessToken}";
 
             return (await HttpService.PostAsync<JsonResultModel>(url, model)).Data;
         }
@@ -70,7 +68,7 @@ namespace Passingwind.Weixin.Mp.Apis
         /// </remarks>
         public async Task<JsonResultModel> DeleteAsync()
         {
-            string url = $"{ServerUrl.MP_API_URL}/menu/delete?access_token={_api.Token?.AccessToken}";
+            string url = $"{ServerHostConfig.DefaultApiHost}/cgi-bin/menu/delete?access_token={_api.Token?.AccessToken}";
 
             return (await HttpService.GetAsync<JsonResultModel>(url)).Data;
         }
@@ -92,7 +90,7 @@ namespace Passingwind.Weixin.Mp.Apis
                 throw new ArgumentNullException(nameof(model));
             }
 
-            string url = $"{ServerUrl.MP_API_URL}/menu/addconditional?access_token={_api.Token?.AccessToken}";
+            string url = $"{ServerHostConfig.DefaultApiHost}/cgi-bin/menu/addconditional?access_token={_api.Token?.AccessToken}";
 
             return (await HttpService.PostAsync<AddConditionalResultModel>(url, model)).Data;
         }
@@ -105,7 +103,7 @@ namespace Passingwind.Weixin.Mp.Apis
         /// </remarks>
         public async Task<JsonResultModel> DeleteConditional()
         {
-            string url = $"{ServerUrl.MP_API_URL}/menu/delconditional?access_token={_api.Token?.AccessToken}";
+            string url = $"{ServerHostConfig.DefaultApiHost}/cgi-bin/menu/delconditional?access_token={_api.Token?.AccessToken}";
 
             return (await HttpService.PostAsync<JsonResultModel>(url)).Data;
         }
@@ -123,7 +121,7 @@ namespace Passingwind.Weixin.Mp.Apis
                 throw new ArgumentException("message", nameof(userId));
             }
 
-            string url = $"{ServerUrl.MP_API_URL}/menu/trymatch?access_token={_api.Token?.AccessToken}";
+            string url = $"{ServerHostConfig.DefaultApiHost}/cgi-bin/menu/trymatch?access_token={_api.Token?.AccessToken}";
 
             return (await HttpService.PostAsync<MenuResultModel>(url, new { user_id = userId })).Data;
         }
@@ -140,7 +138,7 @@ namespace Passingwind.Weixin.Mp.Apis
         /// </remarks>
         public async Task<MenuResultModel> GetCurrentSelfMenuInfo()
         {
-            string url = $"{ServerUrl.MP_API_URL}/get_current_selfmenu_info?access_token={_api.Token?.AccessToken}";
+            string url = $"{ServerHostConfig.DefaultApiHost}/cgi-bin/get_current_selfmenu_info?access_token={_api.Token?.AccessToken}";
 
             return (await HttpService.GetAsync<MenuResultModel>(url)).Data;
         }

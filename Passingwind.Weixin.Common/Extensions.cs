@@ -15,7 +15,7 @@ namespace Passingwind.Weixin.Common
         public static T ToJsonResultModel<T>(this string jsonText) where T : JsonResultModel
         {
             var result = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(jsonText);
-            result.JsonSource = jsonText;
+            result.Raw = jsonText;
             return result;
         }
     }

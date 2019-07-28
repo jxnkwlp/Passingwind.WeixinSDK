@@ -1,15 +1,12 @@
 ﻿using Passingwind.Weixin.Common;
-using Passingwind.Weixin.Common.Utils;
 using Passingwind.Weixin.Http;
 using Passingwind.Weixin.Logger;
 using Passingwind.Weixin.Models;
-using Passingwind.Weixin.Mp.Models.Media;
+using Passingwind.Weixin.MP.Models.Media;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace Passingwind.Weixin.Mp.Apis
+namespace Passingwind.Weixin.MP.Apis
 {
     /// <summary>
     ///  素材管理
@@ -23,6 +20,8 @@ namespace Passingwind.Weixin.Mp.Apis
         protected ILogger Logger => _api.Logger;
 
         protected IHttpService HttpService => _api.HttpService;
+
+        protected WeixinServerHostConfig ServerHostConfig => _api.ServerHostConfig;
 
         public MediaApi(WeixinMpApi api)
         {
@@ -39,7 +38,7 @@ namespace Passingwind.Weixin.Mp.Apis
         /// </remarks>
         public async Task<MediaUploadResultModel> UploadAsync(MediaUploadRequestModel upload)
         {
-            string url = $"{ServerUrl.MP_API_URL}/media/upload?access_token={_api.Token?.AccessToken}&type={upload.Type.ToString().ToLower()}";
+            string url = $"{ServerHostConfig.DefaultApiHost}/cgi-bin/media/upload?access_token={_api.Token?.AccessToken}&type={upload.Type.ToString().ToLower()}";
 
             return (await HttpService.PostAsync<MediaUploadRequestModel, MediaUploadResultModel>(url, upload, PostDataType.FormData)).Data;
         }
@@ -57,7 +56,7 @@ namespace Passingwind.Weixin.Mp.Apis
                 throw new ArgumentException("message", nameof(mediaId));
             }
 
-            string url = $"{ServerUrl.MP_API_URL}/media/get?access_token={_api.Token?.AccessToken}&media_id={mediaId}";
+            string url = $"{ServerHostConfig.DefaultApiHost}/cgi-bin/media/get?access_token={_api.Token?.AccessToken}&media_id={mediaId}";
 
             var response = await HttpService.GetAsync(url);
             if (response.Success)
@@ -90,7 +89,7 @@ namespace Passingwind.Weixin.Mp.Apis
                 throw new ArgumentException("message", nameof(mediaId));
             }
 
-            string url = $"{ServerUrl.MP_API_URL}/media/get/jssdk?access_token={_api.Token?.AccessToken}&media_id={mediaId}";
+            string url = $"{ServerHostConfig.DefaultApiHost}/cgi-bin/media/get/jssdk?access_token={_api.Token?.AccessToken}&media_id={mediaId}";
 
             var response = await HttpService.GetAsync(url);
             if (response.Success)
@@ -125,7 +124,7 @@ namespace Passingwind.Weixin.Mp.Apis
             if (model == null)
                 throw new ArgumentNullException(nameof(model));
 
-            string url = $"{ServerUrl.MP_API_URL}/material/add_news?access_token={_api.Token?.AccessToken}";
+            string url = $"{ServerHostConfig.DefaultApiHost}/cgi-bin/material/add_news?access_token={_api.Token?.AccessToken}";
 
             var data = new { articles = model };
 
@@ -143,7 +142,7 @@ namespace Passingwind.Weixin.Mp.Apis
             if (model == null)
                 throw new ArgumentNullException(nameof(model));
 
-            string url = $"{ServerUrl.MP_API_URL}/material/add_material?access_token={_api.Token?.AccessToken}&type={model.Type.ToString().ToLower()}";
+            string url = $"{ServerHostConfig.DefaultApiHost}/cgi-bin/material/add_material?access_token={_api.Token?.AccessToken}&type={model.Type.ToString().ToLower()}";
 
             return (await HttpService.PostAsync<AddMaterialRequestModel, AddMaterialResultModel>(url, model, PostDataType.FormData)).Data;
         }
@@ -159,7 +158,7 @@ namespace Passingwind.Weixin.Mp.Apis
             if (file == null)
                 throw new ArgumentNullException(nameof(file));
 
-            string url = $"{ServerUrl.MP_API_URL}/media/uploadimg?access_token={_api.Token?.AccessToken} ";
+            string url = $"{ServerHostConfig.DefaultApiHost}/cgi-bin/media/uploadimg?access_token={_api.Token?.AccessToken} ";
 
             return (await HttpService.PostAsync<UploadImageResultModel>(url, new { media = file }, PostDataType.FormData)).Data;
         }
@@ -178,7 +177,7 @@ namespace Passingwind.Weixin.Mp.Apis
                 throw new ArgumentException("message", nameof(mediaId));
             }
 
-            string url = $"{ServerUrl.MP_API_URL}/material/get_material?access_token={_api.Token?.AccessToken} ";
+            string url = $"{ServerHostConfig.DefaultApiHost}/cgi-bin/material/get_material?access_token={_api.Token?.AccessToken} ";
 
             var data = new { media_id = mediaId };
 
@@ -209,7 +208,7 @@ namespace Passingwind.Weixin.Mp.Apis
         /// </remarks>
         public async Task<JsonResultModel> DeleteMaterial(string mediaId)
         {
-            string url = $"{ServerUrl.MP_API_URL}/material/del_material?access_token={_api.Token?.AccessToken} ";
+            string url = $"{ServerHostConfig.DefaultApiHost}/cgi-bin/material/del_material?access_token={_api.Token?.AccessToken} ";
 
             var data = new { media_id = mediaId };
 
@@ -227,7 +226,7 @@ namespace Passingwind.Weixin.Mp.Apis
             if (model == null)
                 throw new ArgumentNullException(nameof(model));
 
-            string url = $"{ServerUrl.MP_API_URL}/material/update_news?access_token={_api.Token?.AccessToken} ";
+            string url = $"{ServerHostConfig.DefaultApiHost}/cgi-bin/material/update_news?access_token={_api.Token?.AccessToken} ";
 
             return (await HttpService.PostAsync<JsonResultModel>(url, model)).Data;
         }
@@ -240,7 +239,7 @@ namespace Passingwind.Weixin.Mp.Apis
         /// </remarks>
         public async Task<GetMaterialCountResultModel> GetMaterialCount()
         {
-            string url = $"{ServerUrl.MP_API_URL}/material/get_materialcount?access_token={_api.Token?.AccessToken} ";
+            string url = $"{ServerHostConfig.DefaultApiHost}/cgi-bin/material/get_materialcount?access_token={_api.Token?.AccessToken} ";
 
             return (await HttpService.GetAsync<GetMaterialCountResultModel>(url)).Data;
         }
@@ -257,7 +256,7 @@ namespace Passingwind.Weixin.Mp.Apis
             if (model == null)
                 throw new ArgumentNullException(nameof(model));
 
-            string url = $"{ServerUrl.MP_API_URL}/material/batchget_material?access_token={_api.Token?.AccessToken} ";
+            string url = $"{ServerHostConfig.DefaultApiHost}/cgi-bin/material/batchget_material?access_token={_api.Token?.AccessToken} ";
 
             return (await HttpService.PostAsync<BatchGetMaterialResultModel>(url, model)).Data;
         }

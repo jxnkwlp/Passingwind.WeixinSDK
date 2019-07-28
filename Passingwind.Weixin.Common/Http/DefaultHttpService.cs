@@ -37,12 +37,12 @@ namespace Passingwind.Weixin.Http
 
                 result.Raw = await response.Content.ReadAsByteArrayAsync();
 
-                _logger.Info($"request url {url} success. response");
-                _logger.Info(result.RawString);
+                _logger.Info("Http", $"request url {url} success. response");
+                _logger.Info("Http", result.RawString);
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, $"request url {url} failed.");
+                _logger.Error("Http", ex, $"request url {url} failed.");
                 result.Exception = ex;
             }
 
@@ -66,8 +66,8 @@ namespace Passingwind.Weixin.Http
 
                 result.Raw = await response.Content.ReadAsByteArrayAsync();
 
-                _logger.Info($"request url {url} success. response");
-                _logger.Info(result.RawString);
+                _logger.Info("Http", $"request url {url} success. response");
+                _logger.Info("Http", result.RawString);
             }
             catch (Exception ex)
             {
@@ -138,8 +138,8 @@ namespace Passingwind.Weixin.Http
 
                 result.Raw = await httpResponse.Content.ReadAsByteArrayAsync();
 
-                _logger.Info($"request url {url} success. response");
-                _logger.Info(result.RawString);
+                _logger.Info("Http", $"request url {url} success. response");
+                _logger.Info("Http", result.RawString);
             }
             catch (Exception ex)
             {

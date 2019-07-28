@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Passingwind.Weixin.Mp.Models.QrCode
+namespace Passingwind.Weixin.MP.Models.QrCode
 {
     public class QrCodeCreateRequestModel
     {

@@ -1,6 +1,7 @@
 ﻿using Passingwind.Weixin.Dependency;
 using Passingwind.Weixin.Http;
 using Passingwind.Weixin.Logger;
+using System;
 
 namespace Passingwind.Weixin
 {
@@ -18,20 +19,32 @@ namespace Passingwind.Weixin
         {
             DependencyManager.Register<ILogger, NullLogger>();
             DependencyManager.Register<IHttpService, DefaultHttpService>();
+            DependencyManager.Register(new WeixinServerHostConfig());
 
             return new WeixinServiceRegister();
         }
 
-        public WeixinServiceRegister RegisterLogger<TLogger>() where TLogger : class, ILogger
+        public WeixinServiceRegister AddLogger<TLogger>() where TLogger : class, ILogger
         {
             DependencyManager.Register<ILogger, TLogger>();
 
             return this;
         }
 
-        public WeixinServiceRegister RegisterHttpService<THttpService>() where THttpService : class, IHttpService
+        public WeixinServiceRegister AddHttpService<THttpService>() where THttpService : class, IHttpService
         {
             DependencyManager.Register<IHttpService, THttpService>();
+
+            return this;
+        }
+
+        public WeixinServiceRegister AddWeixinServerHost(Action<WeixinServerHostConfig> config)
+        {
+            var defaultConfig = new WeixinServerHostConfig();
+
+            config(defaultConfig);
+
+            DependencyManager.Register(defaultConfig);
 
             return this;
         }

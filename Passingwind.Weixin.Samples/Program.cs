@@ -14,7 +14,7 @@ namespace Passingwind.Weixin.Samples
             string appId = "wxa60caa8a4543d3fa";
             string appSecret = "4f141b47bca5755a169d46584982186a";
 
-            WeixinMpApi mpApi = new WeixinMpApi(appId, appSecret);
+            WeixinMpApiContainer mpApi = new WeixinMpApiContainer(appId, appSecret);
 
             Console.WriteLine(mpApi.Token?.AccessToken);
 

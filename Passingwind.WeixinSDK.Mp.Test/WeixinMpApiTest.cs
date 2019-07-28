@@ -1,9 +1,9 @@
 using Passingwind.Weixin;
 using Passingwind.Weixin.Models;
-using Passingwind.Weixin.Mp;
-using Passingwind.Weixin.Mp.Models;
-using Passingwind.Weixin.Mp.Models.Media;
-using Passingwind.Weixin.Mp.Models.Menus;
+using Passingwind.Weixin.MP;
+using Passingwind.Weixin.MP.Models;
+using Passingwind.Weixin.MP.Models.Media;
+using Passingwind.Weixin.MP.Models.Menus;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,12 +19,19 @@ namespace Passingwind.WeixinSDK.Apis
 
         public WeixinMpApiTest()
         {
-            WeixinServiceRegister.Register();
+            WeixinServiceRegister.Register()
+                .AddMpService();
 
             string appId = "wxa60caa8a4543d3fa";
             string appSecret = "4f141b47bca5755a169d46584982186a";
 
-            MpApi = new WeixinMpApi(appId, appSecret);
+            WeixinMpApiContainer.Register(new MPAccount()
+            {
+                AppId = appId,
+                AppSecret = appSecret,
+            });
+
+            MpApi = WeixinMpApiContainer.GetInstance("default");
 
             Console.WriteLine(MpApi.Token?.AccessToken);
         }
@@ -78,7 +85,7 @@ namespace Passingwind.WeixinSDK.Apis
 
             var result3 = await MpApi.UserApi.BatchGetInfoAsync(openIds.Select(t => new UserInfoRequestModel() { Openid = t }).ToArray());
 
-            Assert.True(result3.ErrorCode == 0 && result3.JsonSource.Length > 0);
+            Assert.True(result3.ErrorCode == 0 && result3.Raw.Length > 0);
 
             var result4 = await MpApi.UserApi.UpdateRemarkAsync(openIds[0], "aaaa");
 

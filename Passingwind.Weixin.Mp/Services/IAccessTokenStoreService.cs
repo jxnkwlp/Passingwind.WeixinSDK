@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Passingwind.Weixin.Mp.Services
+namespace Passingwind.Weixin.MP.Services
 {
     public interface IAccessTokenStoreService
     {

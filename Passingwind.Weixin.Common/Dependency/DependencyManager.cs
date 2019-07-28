@@ -17,6 +17,11 @@ namespace Passingwind.Weixin.Dependency
             _container.Register<TServiceType>();
         }
 
+        public static void Register<TServiceType>(TServiceType instance) where TServiceType : class
+        {
+            _container.Register<TServiceType>(instance);
+        }
+
         public static void Register<TServiceType, TImplServiceType>()
             where TServiceType : class
             where TImplServiceType : class, TServiceType
@@ -27,6 +32,11 @@ namespace Passingwind.Weixin.Dependency
         public static TServiceType Resolve<TServiceType>() where TServiceType : class
         {
             return _container.Resolve<TServiceType>();
+        }
+
+        public static bool TryResolve<TServiceType>(out TServiceType service) where TServiceType : class
+        {
+            return _container.TryResolve<TServiceType>(out service);
         }
 
         public static IEnumerable<TServiceType> ResolveAll<TServiceType>() where TServiceType : class

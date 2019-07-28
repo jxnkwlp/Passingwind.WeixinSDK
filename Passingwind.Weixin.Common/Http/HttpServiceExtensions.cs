@@ -9,6 +9,9 @@ namespace Passingwind.Weixin.Http
 {
     public static class HttpServiceExtensions
     {
+        /// <summary>
+        ///  send get requeste
+        /// </summary> 
         public static async Task<HttpResponse<T>> GetAsync<T>(this IHttpService http, string url) where T : JsonResultModel
         {
             HttpResponse result = await http.GetAsync(url);
@@ -22,7 +25,7 @@ namespace Passingwind.Weixin.Http
         }
 
         /// <summary>
-        ///  Post
+        ///  send post request 
         /// </summary> 
         public static async Task<HttpResponse<T>> PostAsync<T>(this IHttpService http, string url, string content = null) where T : JsonResultModel
         {
@@ -37,8 +40,8 @@ namespace Passingwind.Weixin.Http
         }
 
         /// <summary>
-        ///  Post
-        /// </summary> 
+        ///  send post request 
+        /// </summary>
         public static async Task<HttpResponse> PostAsync<TRequestData>(this IHttpService http,
             string url,
             TRequestData requestData,
@@ -68,8 +71,8 @@ namespace Passingwind.Weixin.Http
         }
 
         /// <summary>
-        ///  Post
-        /// </summary> 
+        ///  send post request 
+        /// </summary>
         public static async Task<HttpResponse<TResultData>> PostAsync<TResultData>(
             this IHttpService http,
             string url,
@@ -88,8 +91,8 @@ namespace Passingwind.Weixin.Http
         }
 
         /// <summary>
-        ///  Post
-        /// </summary> 
+        ///  send post request 
+        /// </summary>
         public static async Task<HttpResponse<TResultData>> PostAsync<TRequestData, TResultData>(
             this IHttpService http,
             string url,

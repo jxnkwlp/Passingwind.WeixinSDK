@@ -1,6 +1,6 @@
 ﻿using Passingwind.Weixin.Models;
 
-namespace Passingwind.Weixin.Mp.Models
+namespace Passingwind.Weixin.MP.Models
 {
     public class TagsGetResultModel : JsonResultModel
     {

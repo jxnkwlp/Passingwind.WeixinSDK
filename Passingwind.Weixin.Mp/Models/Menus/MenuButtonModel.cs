@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Passingwind.Weixin.Mp.Models.Menus
+namespace Passingwind.Weixin.MP.Models.Menus
 {
     public class MenuButtonModel
     {

@@ -1,7 +1,7 @@
 ﻿using Passingwind.Weixin.Models;
 using System.Collections.Generic;
 
-namespace Passingwind.Weixin.Mp.Models.Media
+namespace Passingwind.Weixin.MP.Models.Media
 {
     public class GetMaterialResultModel : JsonResultModel
     {

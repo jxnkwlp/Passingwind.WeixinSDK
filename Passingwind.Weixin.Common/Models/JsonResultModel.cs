@@ -1,8 +1,4 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Passingwind.Weixin.Models
 {
@@ -21,6 +17,6 @@ namespace Passingwind.Weixin.Models
         /// <summary>
         ///  JSON Source
         /// </summary>
-        public string JsonSource { get; set; }
+        public string Raw { get; set; }
     }
 }
